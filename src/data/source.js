@@ -1,18 +1,14 @@
 class DataSource extends HTMLElement {
-    static searchPopular(keyword) {
-        return fetch(`https://api.themoviedb.org/3/search/movie?api_key=e20c78a97600756dc770465b1b12fc6c&language=en-US&query=${keyword}`)
-        .then(response => {
-            return response.json();
-        }) 
-        .then(responseJson => {
-            return responseJson.results;
-        }).then(popular => {
-            if (popular.length) {
-                return Promise.resolve(popular);
-            } else {
-                return Promise.reject(`${keyword}tidak ditemukan`);
-            }       
-        })      
+    static async searchPopular(keyword) {
+        try {
+            const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=e20c78a97600756dc770465b1b12fc6c&language=en-US&query=${keyword}`);
+            const responseJson = await response.json();
+            const popular = await responseJson.results;
+            if (popular.length) return popular;
+            return throw new Error(`${keyword} tidak ditemukan.`);
+        } catch (error) {
+            return (`${keyword} tidak ditemukan.`);
+        }   
     }
 }
 
